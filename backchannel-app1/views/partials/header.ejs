@@ -13,11 +13,11 @@
     <script>
     (function() {
         let accessToken = '<%= locals.idToken %>'; // get from soemwhere
-        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session?token=${accessToken}&sid=<%= user.sid %>`);
+        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session?token=${accessToken}`);
 
-    socket.onopen = function(e) {
-  console.info("[open] Connection established");
-};
+        socket.onopen = function(e) {
+            console.info("[open] Connection established");
+        };
 
 socket.onmessage = function(event) {
     console.info(`[message] Data received from server: ${event.data}`);
