@@ -1,7 +1,7 @@
 const jose = require('jose');
 const axios = require('axios');
 
-module.export = async function (sid) {
+module.exports = async function (sid) {
 	const privateKeyJSONB64 = process.env.PRIVATE_KEY_JSON_BASE64;
 	const privateJWKJson = JSON.parse(Buffer.from(privateKeyJSONB64, 'base64').toString('utf8'));
 	const privateJWK = await jose.importJWK(privateJWKJson, 'ES256');
