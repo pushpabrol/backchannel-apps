@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const logoutMessage = require('../utils/logoutMessage');
 
 const { requiresAuth } = require('express-openid-connect');
 
@@ -12,7 +13,9 @@ const deleteUserSessions = require('../utils/sessions');
 router.post(
   '/backchannel-logout',
   requiresValidLogoutToken,
-  function (req, res, next) {
+  async function (req, res, next) {
+
+
     // at this point the logout token is valid
     // you can access it from the request object: req.logoutToken
     // the payload looks like this:
@@ -36,7 +39,8 @@ router.post(
 
     // emit an event via websocket so the frontend can be notified to reload the page
 
-      req.app.locals.io.to(req.logoutToken.sid).emit(`client_logout:${process.env.APP_NAME}`, 'Client has been logged out');
+      //req.app.locals.io.to(req.logoutToken.sid).emit(`client_logout:${process.env.APP_NAME}`, 'Client has been logged out');
+      await logoutMessage(req.logoutToken.sid)
 
     res.sendStatus(200);
   }
@@ -55,13 +59,17 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/profile', requiresAuth(), function (req, res, next) {
+  console.log(req.oidc.accessToken);
+  console.log(req.oidc.idToken);
+
   res.render('profile', {
     userProfile: JSON.stringify(req.oidc.user, null, 2),
     title: 'Profile page',
     headline: process.env.APP_NAME,
     backgroundColor: process.env.BACKGROUND_COLOR,
     baseURL: process.env.BASE_URL,
-    sid: req.oidc.user.sid
+    sid: req.oidc.user.sid,
+    idToken: req.oidc.idToken
   });
 });
 

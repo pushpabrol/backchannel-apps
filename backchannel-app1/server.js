@@ -3,7 +3,7 @@ const express = require('express');
 const http = require('http');
 const logger = require('morgan');
 const path = require('path');
-const socketIO = require('socket.io');
+//const socketIO = require('socket.io');
 const router = require('./routes/index');
 const { auth } = require('express-openid-connect');
 const jose = require('jose');
@@ -19,33 +19,33 @@ const app = express();
 const server = http.createServer(app);
 
 // create websocket server connection
-const io = socketIO(server, {
-  cors: {
-    // origin: process.env.CLIENT_DOMAIN || 'localhost',
-    origin: process.env.BASE_URL, // for demo only, don't use * in production
-    methods: ['GET', 'POST'],
-  },
-});
+// const io = socketIO(server, {
+//   cors: {
+//     // origin: process.env.CLIENT_DOMAIN || 'localhost',
+//     origin: process.env.BASE_URL, // for demo only, don't use * in production
+//     methods: ['GET', 'POST'],
+//   },
+// });
 
-io.on('connection', function (socket) {
-  console.log("Connected succesfully to the socket bcapp2 ...");
-  console.log("Socket ID", socket.id); // prints "polling"
+// io.on('connection', function (socket) {
+//   console.log("Connected succesfully to the socket bcapp2 ...");
+//   console.log("Socket ID", socket.id); // prints "polling"
   
-  socket.on(`client_logout:${process.env.APP_NAME}`, function (data) {
-    console.log("bclda-2");
-      console.log(data);
-  });
+//   socket.on(`client_logout:${process.env.APP_NAME}`, function (data) {
+//     console.log("bclda-2");
+//       console.log(data);
+//   });
 
-  socket.on(`sessionID`, function (sid) {
-    socket.join(sid);
-    console.log(` ${socket.id} joined room: ${sid}`);
-  });
+//   socket.on(`sessionID`, function (sid) {
+//     socket.join(sid);
+//     console.log(` ${socket.id} joined room: ${sid}`);
+//   });
 
-  socket.on("disconnect", (reason) => {
-    console.log(`disconnect ${socket.id} due to ${reason}`);
-  });
+//   socket.on("disconnect", (reason) => {
+//     console.log(`disconnect ${socket.id} due to ${reason}`);
+//   });
 
-});
+// });
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -62,6 +62,11 @@ app.use(express.urlencoded({ extended: true }));
 const config = {
   authRequired: false,
   idpLogout: true,
+  authorizationParams: {
+    audience: 'https://api.com',
+    scope: 'openid profile email read:data',
+    response_type: 'code'
+  },
 
   // Add session store to express-openid-connect
   session: {
@@ -103,7 +108,7 @@ app.use(function (req, res, next) {
 // Middleware to make the `sessionStore` and websocket io object available in the app object
 app.use(function (req, res, next) {
   app.locals.sessionStore = config.session.store;
-  app.locals.io = io;
+  //app.locals.io = io;
   app.locals.appName = process.env.APP_NAME;
   next();
 });
