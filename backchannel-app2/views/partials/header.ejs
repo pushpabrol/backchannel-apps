@@ -13,8 +13,8 @@
     <% if (typeof locals.idToken !== 'undefined' ) { %>
     <script>
     (function() {
-        let accessToken = '<%= locals.idToken %>'; // get from soemwhere
-        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session2?token=${accessToken}`);
+        let idToken = '<%= locals.idToken %>'; // get from soemwhere
+        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session2?token=${idToken}`);
 
         socket.onopen = function(e) {
             console.log(e)
