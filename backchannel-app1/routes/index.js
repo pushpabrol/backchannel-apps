@@ -55,6 +55,7 @@ router.get('/', function (req, res, next) {
     headline: process.env.APP_NAME,
     backgroundColor: process.env.BACKGROUND_COLOR,
     baseURL: process.env.BASE_URL,
+    idToken: req.oidc ? req.oidc.idToken : null
   });
 });
 

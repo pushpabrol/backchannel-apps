@@ -10,38 +10,39 @@
     <link rel="shortcut icon" href="//cdn2.auth0.com/styleguide/latest/lib/logos/img/favicon.png">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
 
+    <% if (typeof locals.idToken !== 'undefined' ) { %>
     <script>
     (function() {
-        var socket = io('<%= locals.baseURL %>');
-        socket.on("connect", () => {
-            console.log(`connect ${socket.id}`);
-        });
+        let accessToken = '<%= locals.idToken %>'; // get from soemwhere
+        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session?token=${accessToken}`);
 
-        socket.on("connect_error", (err) => {
-            console.log(`connect_error due to ${err.message}`);
-        });
+        socket.onopen = function(e) {
+            console.log(e)
+            console.info("[open] Connection established");
+        };
 
-        socket.on('disconnect', function () {
-            console.log(socket.id + " disconnected")
-        });
+socket.onmessage = function(event) {
+    console.info(`[message] Data received from server: ${event.data}`);
+    alert(event.data);
 
-        socket.on("client_logout:<%= locals.appName %>", (arg) => {
-            console.log(socket.id + ": connected: " + socket.connected );
-            if (socket.connected)
-            var loggedIn =  <%- locals.loggedIn %>;
-            if (loggedIn) {
-                alert(arg);
-                location.reload();
-            }
+};
 
-        });
-     
-            var sid =  '<%- locals.sid %>';
-            if (sid !== '' && socket){
-                socket.emit('sessionID', sid);
-            }
+socket.onclose = function(event) {
+  if (event.wasClean) {
+      console.info(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    // e.g. server process killed or network down
+    // event.code is usually 1006 in this case
+      console.info('[close] Connection died');
+  }
+};
+
+socket.onerror = function(error) {
+    console.info(`[error]`);
+};
         })()
     </script>
+    <% } %>
 </head>
 
 <body>

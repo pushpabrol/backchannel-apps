@@ -10,17 +10,21 @@
     <link rel="shortcut icon" href="//cdn2.auth0.com/styleguide/latest/lib/logos/img/favicon.png">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
 
+    <% if (typeof locals.idToken !== 'undefined' ) { %>
     <script>
     (function() {
-        let accessToken = '<%= locals.idToken %>'; // get from soemwhere
-        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session?token=${accessToken}`);
+        let idToken = '<%= locals.idToken %>'; // get from soemwhere
+        let socket = new WebSocket(`wss://pushp.on.kanalo.dev/realtime-session?token=${idToken}`);
 
         socket.onopen = function(e) {
+            console.log(e)
             console.info("[open] Connection established");
         };
 
 socket.onmessage = function(event) {
     console.info(`[message] Data received from server: ${event.data}`);
+    alert(event.data);
+
 };
 
 socket.onclose = function(event) {
@@ -38,6 +42,7 @@ socket.onerror = function(error) {
 };
         })()
     </script>
+    <% } %>
 </head>
 
 <body>
