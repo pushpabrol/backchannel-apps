@@ -23,7 +23,10 @@
 
 socket.onmessage = function(event) {
     console.info(`[message] Data received from server: ${event.data}`);
-    alert(event.data);
+    if(event.data && event.data.type == "log-out" ) {
+        alert("You have been logged out!");
+        window.location = "/";
+    }
 
 };
 
