@@ -21,7 +21,7 @@ module.exports = async function (sid) {
 		.sign(privateJWK);
 
 	console.log("Sending message with a Private key JWT");
-	const res = await axios.post(`${process.env.KANALO_ISSUER.replace('.on.', '.api.')}/v1/commands`, 
+	const res = await axios.post(`${process.env.KANALO_ISSUER.replace('.on.', '.api.')}/realtime-session2/v1/commands`, 
 		[{
 			"command":"message",
 			"params":{ 
